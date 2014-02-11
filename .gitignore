@@ -1,0 +1,8 @@
+/build/
+/.gradle/1.10/taskArtifacts/fileHashes.bin
+/.gradle/1.10/taskArtifacts/taskArtifacts.bin
+/.gradle/1.10/taskArtifacts/fileSnapshots.bin
+/.gradle/1.10/taskArtifacts/cache.properties
+/.gradle/1.10/taskArtifacts/outputFileStates.bin
+/private/cache/retriever/catalog.xml
+/.gradle/1.10/taskArtifacts/cache.properties.lock
