@@ -21,30 +21,46 @@
                     Header
                 </p:layoutUnit>
 
+                
+                
                 <p:layoutUnit position="center">
-                    <h:form>
+                    <h:form id="reportForm">
+                    <p:ajaxStatus style="width:32px;height:32px">  
+                        <f:facet name="start">  
+                            <p:graphicImage value="/images/ajax-loader.gif" />  
+                        </f:facet>  
+
+                        <f:facet name="complete">  
+                            <h:outputText value="" />  
+                        </f:facet>  
+                    </p:ajaxStatus>                  
                                                 
                         <h:outputText value="Select a Date" />  
                         <br />                                                
-                        <p:calendar value="#{reportBrowser.date}" id="popupButtonCal" showOn="button">
-                            <p:ajax event="dateSelect" listener="#{reportBrowser.handleDateSelect}" update="banks" />
+                        <p:calendar value="#{reportBrowser.date}" id="date" showOn="button"  mindate="01/01/10" maxdate="12/31/12"  >
+                            <p:ajax event="dateSelect" listener="#{reportBrowser.handleDateSelect}" update="banks"  />
                         </p:calendar>
-                                    
+                        <br />            
                         <br />
                         <h:outputText value="Pick a Bank" />  
                         <br/>
-                        <p:selectOneListbox id="banks"  >  
-                            <f:selectItems value="#{reportBrowser.banks}" />
+                        <p:selectOneListbox id="banks"  value="#{reportBrowser.bankId}"   >
+                            <p:ajax update="reports" listener="#{reportBrowser.handleBankSelect}"  />                           
+                            <f:selectItems value="#{reportBrowser.banks}"/>
                         </p:selectOneListbox>                          
+                        <br />                                    
                         <br />                        
-                        <h:outputText value="Down Load a Report" />  
-                        <br />                        
-                        <p:selectOneListbox id="reports"  >  
-                            <f:selectItems value="#{reportBrowser.reports}" />
-                        </p:selectOneListbox>                          
+                        <p:panel header="Click on report to Download" id="reportsPanel" >
+                            <p:dataList id="reports" value="#{reportBrowser.reports}" var="item">
+                                <p:commandLink id="rptDLink" ajax="false">                                     
+                                    <h:outputText value="#{item.label}" />
+                                    <f:param name="ruid" value="#{item.value}" />                                    
+                                    <p:fileDownload value="#{reportBrowser.downLoad()}" />
+                                </p:commandLink>
+                            </p:dataList>
+                        </p:panel>                        
                     </h:form>
                 </p:layoutUnit>
-
             </p:layout>
 
         </h:body>
