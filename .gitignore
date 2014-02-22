@@ -6,3 +6,4 @@
 /.gradle/1.10/taskArtifacts/outputFileStates.bin
 /private/cache/retriever/catalog.xml
 /.gradle/1.10/taskArtifacts/cache.properties.lock
+/.nb-gradle/private/
