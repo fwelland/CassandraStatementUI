@@ -1,4 +1,4 @@
-Cassie1UI
+CassandraStatementUI
 =========
 
-Simple Web UI for Cassie1
+Simple Web UI for a Prototype Cassandra Project 
