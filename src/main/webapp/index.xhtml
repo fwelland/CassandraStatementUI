@@ -37,34 +37,32 @@
                                                 
                         <h:outputText value="Select a Date" />  
                         <br />                                                
-                        <p:calendar value="#{reportBrowser.date}" id="date" showOn="button"  mindate="01/01/10" maxdate="12/31/12"  >
-                            <p:ajax event="dateSelect" listener="#{reportBrowser.handleDateSelect}" update="banks"  />
+                        <p:calendar value="#{statementBrowser.date}" id="date" showOn="button"  mindate="01/01/10" maxdate="12/31/12"  >
+                            <p:ajax event="dateSelect" listener="#{statementBrowser.handleDateSelect}" update="custs"  />
                         </p:calendar>
                         <br />            
                         <br />
-                        <h:outputText value="Pick a Bank" />  
+                        <h:outputText value="Pick a Customer" />  
                         <br/>
-                        <p:selectOneListbox id="banks"  value="#{reportBrowser.bankId}"   >
-                            <p:ajax update="reports" listener="#{reportBrowser.handleBankSelect}"  />                           
-                            <f:selectItems value="#{reportBrowser.banks}"/>
+                        <p:selectOneListbox id="custs"  value="#{statementBrowser.customerId}"   >
+                            <p:ajax update="statements" listener="#{statementBrowser.handleCustomerSelect}"  />                           
+                            <f:selectItems value="#{statementBrowser.customers}"/>
                         </p:selectOneListbox>                          
                         <br />                                    
                         <br />                        
-                        <p:panel header="Click on report to Download" id="reportsPanel" >
-                            <p:dataList id="reports" value="#{reportBrowser.reports}" var="item">
+                        <p:panel header="Click on report to Download" id="statementsPanel" >
+                            <p:dataList id="statements" value="#{statementBrowser.statements}" var="item">
                                 <p:commandLink id="rptDLink" ajax="false">                                     
                                     <h:outputText value="#{item.label}" />
                                     <f:param name="ruid" value="#{item.value}" />                                    
-                                    <p:fileDownload value="#{reportBrowser.downLoad()}" />
+                                    <p:fileDownload value="#{statementBrowser.downLoad()}" />
                                 </p:commandLink>
                             </p:dataList>
                         </p:panel>                        
                     </h:form>
                 </p:layoutUnit>
             </p:layout>
-
         </h:body>
-
     </f:view>
 </html>
 

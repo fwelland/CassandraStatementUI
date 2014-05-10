@@ -8,7 +8,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.driver.core.querybuilder.*;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,61 +26,29 @@ import javax.faces.model.SelectItem;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import lombok.*;
 
+@Data
 @Named
 @SessionScoped
-public class ReportBrowser
+public class StatementBrowser
         implements Serializable
 {
 
     private Date date;
-    private int bankId;
-    private List<Integer> banks;
-    private List<SelectItem> reports;
+    private Integer customerId;
+    private List<Integer> customers;
+    private List<SelectItem> statements;
+    
+    
+    
+    private static final String keyspace = "statementarchive";
+    private static final String table = "statements";
 
-    public ReportBrowser()
+
+    public StatementBrowser()
     {
 
-    }
-
-    public Date getDate()
-    {
-        return date;
-    }
-
-    public void setDate(Date date)
-    {
-        this.date = date;
-    }
-
-    public int getBankId()
-    {
-        return bankId;
-    }
-
-    public void setBankId(int bankId)
-    {
-        this.bankId = bankId;
-    }
-
-    public List<Integer> getBanks()
-    {
-        return banks;
-    }
-
-    public void setBanks(List<Integer> banks)
-    {
-        this.banks = banks;
-    }
-
-    public List<SelectItem> getReports()
-    {
-        return reports;
-    }
-
-    public void setReports(List<SelectItem> reports)
-    {
-        this.reports = reports;
     }
 
     public void handleDateSelect(SelectEvent event)
@@ -96,20 +64,20 @@ public class ReportBrowser
             cal.setTime(date);
             y = cal.get(Calendar.YEAR);
             m = cal.get(Calendar.MONTH);
-            day = cal.get(Calendar.DAY_OF_MONTH);
-            Statement q = QueryBuilder.select().column("bank_id").from("pinappsreportarchive", "reports").allowFiltering().limit(300).where(eq("year", y)).and(eq("month", m)).and(eq("day", day));
+            day = cal.get(Calendar.DAY_OF_MONTH);            
+            
+            Statement q = QueryBuilder.select().column("customer_id").from(keyspace, table).allowFiltering().limit(300).where(eq("year", y)).and(eq("month", m)).and(eq("day", day));
             ResultSet rs = s.execute(q);
             Map<Integer, Integer> map = new HashMap<>();
-            banks = new ArrayList<>();
             for (Row row : rs)
             {
-                Integer b = row.getInt("bank_id");
+                Integer b = row.getInt("customer_id");
                 map.put(b, b);
             }
-            banks = new ArrayList<>();
+            customers = new ArrayList<>();
             for (Integer i : map.keySet())
             {
-                banks.add(i);
+                customers.add(i);
             }
         }
         finally
@@ -118,7 +86,7 @@ public class ReportBrowser
         }
     }
 
-    public void handleBankSelect()
+    public void handleCustomerSelect()
     {
         Cluster c = null;
         Session s = null;
@@ -132,15 +100,15 @@ public class ReportBrowser
             y = cal.get(Calendar.YEAR);
             m = cal.get(Calendar.MONTH);
             day = cal.get(Calendar.DAY_OF_MONTH);
-            Statement q = QueryBuilder.select().column("report_archive_id").column("description").from("pinappsreportarchive", "reports").allowFiltering().limit(300).where(eq("year", y)).and(eq("month", m)).and(eq("day", day)).and(eq("bank_id", bankId));
+            Statement q = QueryBuilder.select().column("statement_archive_id").column("description").from(keyspace, table).allowFiltering().limit(300).where(eq("year", y)).and(eq("month", m)).and(eq("day", day)).and(eq("customer_id", customerId));
             ResultSet rs = s.execute(q);
             Map<Integer, Integer> map = new HashMap<>();
-            reports = new ArrayList<>();
+            statements = new ArrayList<>();
             for (Row row : rs)
             {
-                UUID id = row.getUUID("report_archive_id");
+                UUID id = row.getUUID("statement_archive_id");
                 String description = row.getString("description");
-                reports.add(new SelectItem(id.toString(), description));
+                statements.add(new SelectItem(id.toString(), description));
             }
         }
         catch (Exception e)
