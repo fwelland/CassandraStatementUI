@@ -9,7 +9,7 @@
         <h:head>
             <f:facet name="first">
                 <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
-                <title>APC</title>
+                <title>Customer Statement Browser</title>
             </f:facet>
         </h:head>
 
@@ -18,13 +18,12 @@
             <p:layout fullPage="true">
 
                 <p:layoutUnit position="north" size="100" resizable="fasle" closable="false" collapsible="false">
-                    Header
+                    Customer Statements
                 </p:layoutUnit>
 
                 
-                
                 <p:layoutUnit position="center">
-                    <h:form id="reportForm">
+                    <h:form id="statementForm">
                     <p:ajaxStatus style="width:32px;height:32px">  
                         <f:facet name="start">  
                             <p:graphicImage value="/images/ajax-loader.gif" />  
@@ -50,7 +49,7 @@
                         </p:selectOneListbox>                          
                         <br />                                    
                         <br />                        
-                        <p:panel header="Click on report to Download" id="statementsPanel" >
+                        <p:panel header="Click on statement to Download" id="statementsPanel" >
                             <p:dataList id="statements" value="#{statementBrowser.statements}" var="item">
                                 <p:commandLink id="rptDLink" ajax="false">                                     
                                     <h:outputText value="#{item.label}" />

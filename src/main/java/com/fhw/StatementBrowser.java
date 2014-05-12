@@ -63,9 +63,9 @@ public class StatementBrowser
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
             y = cal.get(Calendar.YEAR);
-            m = cal.get(Calendar.MONTH);
+            m = cal.get(Calendar.MONTH) + 1;
             day = cal.get(Calendar.DAY_OF_MONTH);            
-            
+            System.out.println(String.format("month %d, day %d, year %d ", m,day,y));
             Statement q = QueryBuilder.select().column("customer_id").from(keyspace, table).allowFiltering().limit(300).where(eq("year", y)).and(eq("month", m)).and(eq("day", day));
             ResultSet rs = s.execute(q);
             Map<Integer, Integer> map = new HashMap<>();
@@ -98,16 +98,16 @@ public class StatementBrowser
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
             y = cal.get(Calendar.YEAR);
-            m = cal.get(Calendar.MONTH);
+            m = cal.get(Calendar.MONTH) + 1;
             day = cal.get(Calendar.DAY_OF_MONTH);
-            Statement q = QueryBuilder.select().column("statement_archive_id").column("description").from(keyspace, table).allowFiltering().limit(300).where(eq("year", y)).and(eq("month", m)).and(eq("day", day)).and(eq("customer_id", customerId));
+            Statement q = QueryBuilder.select().column("archived_statement_id").column("statement_filename").from(keyspace, table).allowFiltering().limit(300).where(eq("year", y)).and(eq("month", m)).and(eq("day", day)).and(eq("customer_id", customerId));
             ResultSet rs = s.execute(q);
             Map<Integer, Integer> map = new HashMap<>();
             statements = new ArrayList<>();
             for (Row row : rs)
             {
-                UUID id = row.getUUID("statement_archive_id");
-                String description = row.getString("description");
+                UUID id = row.getUUID("archived_statement_id");
+                String description = row.getString("statement_filename");
                 statements.add(new SelectItem(id.toString(), description));
             }
         }
@@ -142,11 +142,11 @@ public class StatementBrowser
                 c = connect();
                 s = c.connect();
                 UUID uuid = UUID.fromString(id);
-                Statement q = QueryBuilder.select().column("report").column("description").from("pinappsreportarchive", "reports").where(eq("report_archive_id", uuid));
+                Statement q = QueryBuilder.select().column("statement").column("statement_filename").from(keyspace,table).where(eq("archived_statement_id", uuid));
                 ResultSet rs = s.execute(q);
                 Row one = rs.one();
-                String filename = one.getString("description");
-                ByteBuffer bb = one.getBytes("report");
+                String filename = one.getString("statement_filename");
+                ByteBuffer bb = one.getBytes("statement");
                 sc = new DefaultStreamedContent(new ByteBufferBackedInputStream(bb), "application/octet-stream", filename);
             }
             catch (Exception e)
