@@ -1,8 +1,18 @@
-apply plugin: 'java'
 apply plugin: 'war'
+apply plugin: 'artifactory-publish'
 
 sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+buildscript {
+    repositories {
+         jcenter() //this works with Gradle 1.7
+         // maven { url 'http://jcenter.bintray.com' } this works with Gradle 1.6
+    }
+    dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
+    }
+}
 
 
 repositories {
@@ -28,3 +38,23 @@ configurations.all {
         }
     }
 }
+
+//artifactory {
+//  contextUrl = 'http://localhost:8081/artifactory'
+//  publish{
+//    repository {
+//       repoKey = 'Cassandra-Statement-UI-repo'
+//       username = "admin" 
+//       password = "xxxxx"
+//      }
+//        defaults {
+//
+//        }
+//    }   
+//  }
+//  
+//
+//artifactoryPublish {
+//    skip = false //Skip build info analysis and publishing (false by default)
+//    publications (archiveName)
+//}
